@@ -6,6 +6,11 @@ const _ = require('lodash');
 const Primus = require('primus');
 
 const argv = require('minimist')(process.argv.slice(2));
+<<<<<<< Updated upstream
+=======
+console.log(argv.random);
+process.exit();
+>>>>>>> Stashed changes
 
 const isQuiet = process.env.QUIET;
 
@@ -96,6 +101,10 @@ const play = (name, index) => {
   });
 };
 
+<<<<<<< Updated upstream
+=======
+if (argv.random !== null) {
+>>>>>>> Stashed changes
   _.each(_.sampleSize(players, numPlayers), play);
 } else {
   _.each(players.slice(0, numPlayers), play);
