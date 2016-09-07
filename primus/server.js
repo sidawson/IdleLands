@@ -8,6 +8,7 @@ import Rooms from 'primus-rooms';
 import Multiplex from 'primus-multiplex';
 
 import { GameState } from '../src/core/game-state';
+import { Logger } from '../src/shared/logger';
 
 export const primus = (() => {
   if(process.env.NO_START_GAME) return;
@@ -30,7 +31,10 @@ export const primus = (() => {
   serve.use(compression(), express.static('assets'));
   serve.get('/online', (req, res) => {
     try {
-      res.send(`${GameState.getInstance().getPlayers().length}`);
+      res.json({
+        players: GameState.getInstance().getPlayers().length,
+        sparks: primus.connected
+      });
     } catch (e) {
       res.send(e);
     }
@@ -69,7 +73,7 @@ export const primus = (() => {
 
   primus.use('rooms', Rooms);
   primus.use('emit', Emit);
-  primus.use('multiplex', Multiplex);
+  // primus.use('multiplex', Multiplex);
 
 // force setting up the global connection
   new (require('../src/shared/db-wrapper').DbWrapper)().connectionPromise();
@@ -83,6 +87,15 @@ export const primus = (() => {
       data.event = obj.event;
       respond(data);
     }));
+
+    spark.on('error', e => {
+      Logger.error('Spark', e);
+    });
+
+    setTimeout(() => {
+      if(spark.authToken) return;
+      spark.end();
+    }, 10000);
 
     // spark.join('adventurelog');
   });
