@@ -96,6 +96,7 @@ const play = (name, index) => {
   });
 };
 
+if (argv.random) {
   _.each(_.sampleSize(players, numPlayers), play);
 } else {
   _.each(players.slice(0, numPlayers), play);
