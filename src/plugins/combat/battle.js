@@ -18,7 +18,8 @@ export class Battle {
     this.parties = parties;
     this.introText = introText;
     this.happenedAt = Date.now();
-    this.name = `${this.happenedAt} ${this.generateName()}`;
+    this.name = this.generateName();
+    this.setId();
     this.messageData = [];
     this.currentRound = 0;
   }
@@ -137,8 +138,15 @@ export class Battle {
 
     this.emitEvents(player, 'TakeTurn');
 
-    player._hp.add(player.liveStats.hpregen);
-    player._mp.add(player.liveStats.mpregen);
+    const hpRegen = player.liveStats.hpregen;
+    const mpRegen = player.liveStats.mpregen;
+
+    player._hp.add(hpRegen);
+    player._mp.add(mpRegen);
+
+    if(hpRegen > 0 || mpRegen > 0) {
+      this._emitMessage(`${player.fullname} regenerated ${hpRegen} hp and ${mpRegen} mp!`);
+    }
 
     player.$effects.tick();
   }
@@ -254,8 +262,13 @@ export class Battle {
     return damage;
   }
 
+  setId() {
+    this._id = `${this.happenedAt}-${this.name.split(' ').join('_')}`;
+  }
+
   saveObject() {
     return {
+      _id: this._id,
       name: this.name,
       happenedAt: this.happenedAt,
       messageData: this.messageData,
