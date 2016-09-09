@@ -17,7 +17,10 @@ export class Battle {
   constructor({ parties, introText }) {
     this.parties = parties;
     this.introText = introText;
-    this.happenedAt = Date.now();
+    // 5 digit number from 10000->99999 inclusive
+    // Math.floor(Math.random()*(max-min+1)+min)
+    const salt = Math.floor(Math.random()*90000+10000)
+    this.happenedAt = `${Date.now()}${salt}`;
     this.name = this.generateName();
     this.setId();
     this.messageData = [];
