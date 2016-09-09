@@ -7,9 +7,11 @@
 #babel -q --compact true --minified -d dist src
 
 # but for now...
+# this fails, is already there/created
+#mkdir dist
+
 # put a temp file in there, for the /hello endpoint (so we know it's all working)
-mkdir dist
-echo hello > dist/hello.txt
+cp test.js dist/
 
 # delete the dist line from .gitignore, so git->heroku will auto pick up the dist dir
 # sed -i.bak '/dist/d' .gitignore
