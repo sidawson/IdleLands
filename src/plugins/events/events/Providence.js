@@ -6,10 +6,11 @@ import { Equipment } from '../../../core/base/equipment';
 import { MessageCategories } from '../../../shared/adventure-log';
 import { StringGenerator } from '../../../shared/string-generator';
 
+import { SETTINGS } from '../../../static/settings';
+
 export const WEIGHT = -1;
 
 // Get the gift of the divine
-// TODO change title and personalities?
 export class Providence extends Event {
 
   static generateProvidenceItem(multiplier = 1, t0shift = 0, t1shift = 0, t2shift = 0) {
@@ -53,10 +54,12 @@ export class Providence extends Event {
     gold: 50,
     profession: 10,
     clearProvidence: 20,
-    newProvidence: 75
+    newProvidence: 75,
+    personality: 50,
+    title: 75
   };
 
-  static _genders = ['male', 'female', 'not a bear', 'glowcloud', 'astronomical entity'];
+  static _genders = SETTINGS.validGenders;
   static _professions = (player) => {
     return _.keys(player.$statistics.getStat('Character.Professions')) || ['Generalist'];
   };
@@ -91,6 +94,19 @@ export class Providence extends Event {
       message = `${message} Profession is now ${profession}!`;
     }
 
+    if(Event.chance.bool({ likelihood: this.probabilities.personality })) {
+      _.each(player.$personalities.earnedPersonalities, ({ name }) => {
+        if(Event.chance.bool({ likelihood: 50 }))  return;
+        player.$personalities.togglePersonality(player, name);
+      });
+      message = `${message} Personality shift!`;
+    }
+
+    if(Event.chance.bool({ likelihood: this.probabilities.title })) {
+      player.changeTitle(_.sample(player.$achievements.titles()));
+      message = `${message} Title change!`;
+    }
+
     return message;
   }
 
@@ -122,6 +138,7 @@ export class Providence extends Event {
   static operateOn(player) {
     const eventText = this.eventText('providence', player);
     this.fatePoolProvidence(player, eventText);
+    player.$statistics.batchIncrement(['Character.Events', 'Character.Event.Providence']);
   }
 
 }
