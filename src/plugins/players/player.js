@@ -84,6 +84,10 @@ export class Player extends Character {
   }
 
   takeTurn() {
+    if(this.$personalities.isActive('Camping')) {
+      this.$statistics.incrementStat('Character.Movement.Camping');
+      return;
+    }
     this.moveAction();
     EventHandler.tryToDoEvent(this);
 
@@ -223,6 +227,10 @@ export class Player extends Character {
       incrementStats.push('Character.Movement.Drunk');
     }
 
+    if(this.$personalities.isActive('Solo')) {
+      incrementStats.push('Character.Movement.Solo');
+    }
+
     this.$statistics.batchIncrement(incrementStats);
 
     this.gainXp(SETTINGS.xpPerStep);
@@ -303,6 +311,10 @@ export class Player extends Character {
   update() {
     this._updatePlayer();
     this._updateParty();
+
+    if(this.$updateEquipment) {
+      this._updateEquipment();
+    }
     // this._updateStatistics();
     /* if(this.$updateAchievements) {
       this._updateAchievements();

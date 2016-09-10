@@ -186,13 +186,13 @@ export class Battle {
     return _.filter(this.parties, party => _.some(party.players, p => this.isPlayerAlive(p)))[0];
   }
 
-  get losers() {
-    const winners = this.winningTeam.players;
-    return _.filter(this.allPlayers, p => !_.includes(winners, p));
-  }
-
   get winners() {
     return this.winningTeam.players;
+  }
+
+  get losers() {
+    const winners = this.winners;
+    return _.filter(this.allPlayers, p => !_.includes(winners, p));
   }
 
   isLoser(party) {
@@ -292,14 +292,26 @@ export class Battle {
 
   cleanUp() {
     _.each(this.allPlayers, p => {
+
+      if(p.$prevParty) {
+        p._hp.toMinimum();
+        p.party.playerLeave(p);
+        p.$prevParty.playerJoin(p);
+        delete p.$prevParty;
+      }
+
       p.$battle = null;
       p.$profession.resetSpecial(p);
       p.$effects.clear();
-      if (p.$statistics) {
+      if(p.$statistics) {
         p.$statistics.save();
       }
 
-      if(p.isPet) {
+      if(p.$personalities && p.$personalities.isActive('Solo')) {
+        this.tryIncrement(p, 'CombatSolo');
+      }
+
+      if(!p.isPlayer) {
         p.party.playerLeave(p);
       }
     });

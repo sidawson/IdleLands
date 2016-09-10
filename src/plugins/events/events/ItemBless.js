@@ -14,11 +14,12 @@ export class ItemBless extends Event {
 
     const boost = item[stat] === 0 ? 5 : Math.max(3, Math.abs(Math.floor(item[stat]/20)));
 
-    const eventText = this.eventText('blessItem', player, { item: item.name });
+    const eventText = this.eventText('blessItem', player, { item: item.fullname });
 
     this.emitMessage({ affected: [player], eventText: `${eventText} [${stat} ${item[stat]} -> ${item[stat]+boost}]`, category: MessageCategories.ITEM });
     item[stat] += boost;
     item.score;
     player.recalculateStats();
+    player.$updateEquipment = true;
   }
 }
