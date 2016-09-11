@@ -23,7 +23,7 @@ export class Equipment {
     int: 2,
     luk: 5,
     enchantLevel: -125,
-    xp: 10,
+    xp: 50,
     hp: 0.5,
     mp: 0.2,
     hpregen: 4,
@@ -34,7 +34,18 @@ export class Equipment {
     poison: 200,
     shatter: 300,
     vampire: 300,
-    damageReduction: 25
+    damageReduction: 25,
+    sentimentality: 1,
+    dance: 100,
+    defense: 100,
+    offense: 100,
+    deadeye: 100,
+    lethal: 200,
+    silver: 100,
+    power: 100,
+    vorpal: 500,
+    aegis: 100,
+    glowing: 300
   };
 
   constructor(opts) {
