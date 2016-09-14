@@ -36,7 +36,7 @@ export class Character {
       this[stat].__proto__ = RestrictedNumber.prototype;
     });
 
-    _.each(_.values(this.equipment), item => item.__proto__ = Equipment.prototype);
+    _.each(_.flatten(_.values(this.equipment)), item => item.__proto__ = Equipment.prototype);
 
     if(!this.gender)          this.gender = _.sample(['male', 'female']);
     if(!this.professionName)  this.professionName = 'Generalist';
@@ -78,7 +78,7 @@ export class Character {
   }
 
   get itemScore() {
-    return _.reduce(_.values(this.equipment), (prev, cur) => {
+    return _.reduce(_.flatten(_.values(this.equipment)), (prev, cur) => {
       return prev + cur.score;
     }, 0);
   }
@@ -96,7 +96,7 @@ export class Character {
     const mpVal = StatCalculator.mp(this);
     this._mp.maximum = this._mp.__current = mpVal + (this.mpBoost || 0);
 
-    _.each(['str', 'dex', 'con', 'int', 'agi', 'luk'], stat => {
+    _.each(['str', 'dex', 'con', 'int', 'agi', 'luk', 'itemFindRange'], stat => {
       this.statCache[stat] = this.liveStats[stat];
     });
   }
@@ -151,6 +151,13 @@ export class Character {
     }
   }
 
+  levelUp() {
+    this._level.add(1);
+    this.resetMaxXp();
+    this._xp.toMinimum();
+    this.recalculateStats();
+  }
+
   resetMaxXp() {
     this._xp.maximum = this.levelUpXpCalc(this.level);
   }
@@ -172,7 +179,11 @@ export class Character {
 
   sellItem(item) {
     const value = Math.max(1, Math.floor(item.score * this.liveStats.itemValueMultiplier));
-    this.$statistics.incrementStat('Character.Item.Sell');
+
+    if(this.$statistics) {
+      this.$statistics.incrementStat('Character.Item.Sell');
+    }
+
     this.gainGold(value);
     return value;
   }

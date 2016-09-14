@@ -54,6 +54,7 @@ export class Battle {
 
   startBattle() {
     this.setupParties();
+    this._initialParties = _.cloneDeep(this._partyStats());
     this.startMessage();
     this.startTakingTurns();
   }
@@ -98,6 +99,10 @@ export class Battle {
   }
 
   setupParties() {
+    _.each(this.parties, p => {
+      p.prepareForCombat();
+    });
+
     _.each(this.allPlayers, p => {
       this._setupPlayer(p);
     });
@@ -286,6 +291,7 @@ export class Battle {
       name: this.name,
       happenedAt: this.happenedAt,
       messageData: this.messageData,
+      initialParties: this._initialParties,
       parties: _.map(this.parties, party => party.buildTransmitObject())
     };
   }
@@ -313,6 +319,9 @@ export class Battle {
 
       if(!p.isPlayer) {
         p.party.playerLeave(p);
+
+        // pet flags for update
+        if(p.updatePlayer) p.updatePlayer();
       }
     });
   }

@@ -85,11 +85,23 @@ export class Player extends Character {
   }
 
   takeTurn() {
+
+    const activePet = this.$pets.activePet;
+
+    if(activePet) {
+      activePet.takeTurn();
+      if(activePet.$updatePlayer) {
+        this.__updatePetActive();
+      }
+    }
+
     if(this.$personalities.isActive('Camping')) {
       this.$statistics.incrementStat('Character.Movement.Camping');
       return;
     }
+
     this.moveAction();
+
     EventHandler.tryToDoEvent(this);
 
     if(this.party) {
@@ -100,11 +112,8 @@ export class Player extends Character {
   }
 
   levelUp() {
-    if(this.level === SETTINGS.maxLevel) return;
-    this._level.add(1);
-    this.resetMaxXp();
-    this._xp.toMinimum();
-    this.recalculateStats();
+    if(this.level === this._level.maximum) return;
+    super.levelUp();
     emitter.emit('player:levelup', { player: this });
   }
 
@@ -246,6 +255,10 @@ export class Player extends Character {
     this.gainXp(SETTINGS.xpPerStep);
   }
 
+  unequip(item, replaceWith) {
+    this.equipment[item.type] = replaceWith;
+  }
+
   buildSaveObject() {
     return _.omitBy(this, (val, key) => _.startsWith(key, '$'));
   }
@@ -266,6 +279,7 @@ export class Player extends Character {
     if(this.saveSteps <= 0) {
       this.$playerDb.savePlayer(this);
       this.$statistics.save();
+      this.$pets.save();
       this.saveSteps = SETTINGS.saveSteps;
     }
     this.update();
@@ -276,6 +290,7 @@ export class Player extends Character {
     this.achievementSteps--;
 
     if(this.achievementSteps <= 0) {
+      this.$pets.checkPets(this);
       const newAchievements = this.$achievements.checkAchievements(this);
       if(newAchievements.length > 0) {
         emitter.emit('player:achieve', { player: this, achievements: newAchievements });
@@ -316,6 +331,24 @@ export class Player extends Character {
 
   _updatePersonalities() {
     this.$dataUpdater(this.name, 'personalities', { earned: this.$personalities.earnedPersonalities, active: this.$personalities.activePersonalities });
+  }
+
+  _updatePet() {
+    this.__updatePetBuyData();
+    this.__updatePetBasic();
+    this.__updatePetActive();
+  }
+
+  __updatePetBasic() {
+    this.$dataUpdater(this.name, 'petbasic', this.$pets.earnedPets);
+  }
+
+  __updatePetBuyData() {
+    this.$dataUpdater(this.name, 'petbuy', this.$pets.petInfo);
+  }
+
+  __updatePetActive() {
+    this.$dataUpdater(this.name, 'petactive', this.$pets.activePet.buildTransmitObject());
   }
 
   update() {
