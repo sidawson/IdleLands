@@ -127,12 +127,12 @@ export class Pets {
 
   feedGold(player, amount) {
     amount = Math.round(+amount);
-    if(_.isNaN(amount) || amount <= 0 || player.gold < amount) return;
+    if(_.isNaN(amount) || amount <= 0 || player.gold < amount) return 'Bad amount of gold specified.';
 
     const pet = this.activePet;
     const xpGained = pet.$_scale.xpPerGold * amount;
 
-    if(!pet.canGainXp()) return;
+    if(!pet.canGainXp()) return 'Pet cannot gain XP at this time.';
 
     player.gainGold(-amount);
     player.$statistics.incrementStat('Character.Pet.GoldFed', amount);
@@ -234,7 +234,7 @@ export class Pets {
 
     if(bosses) {
       _.each(bosses, boss => {
-        if(!player.$statistics.getStat(`Character.BossKill.${boss}`)) earned = false;
+        if(!player.$statistics.getStat(`Character.BossKills.${boss}`)) earned = false;
       });
     }
 
@@ -287,6 +287,7 @@ export class Pets {
     }
 
     pet.equip(item, true);
+    pet.removeFromInventory(item);
 
     player.__updatePetActive();
   }
@@ -305,6 +306,8 @@ export class Pets {
       return 'Cannot unequip nothing.';
     }
 
+    item._wasEquipped = true;
+
     player.unequip(item, this.__emptyGear({ slot: item.type }));
     pet.inventory.push(item);
 
@@ -320,6 +323,10 @@ export class Pets {
 
     if(!player.equipment[item.type].isNothing) {
       return 'Cannot equip over something.';
+    }
+
+    if(!player.canEquip(item) && !item._wasEquipped) {
+      return 'Item too powerful for you.';
     }
 
     player.equip(item);
