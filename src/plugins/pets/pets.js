@@ -55,7 +55,7 @@ export class Pets {
       }
 
       while(pet.equipment[key].length > value) {
-        pet.inventory.push(pet.equipment[key].shift());
+        pet.addToInventory(pet.equipment[key].shift());
       }
     });
 
@@ -243,6 +243,8 @@ export class Pets {
 
   sellPetItem(player, itemId) {
     const pet = this.activePet;
+    if(!this.activePet) return;
+
     const item = _.find(pet.inventory, { id: itemId });
     if(!item) return;
 
@@ -254,6 +256,7 @@ export class Pets {
 
   unequipPetItem(player, itemId) {
     const pet = this.activePet;
+    if(!this.activePet) return;
 
     if(pet.inventoryFull()) {
       return 'Pet inventory full.';
@@ -266,14 +269,19 @@ export class Pets {
       return 'Cannot unequip nothing.';
     }
 
+    if(item.type === 'soul') {
+      return 'Souls are irreplaceable.';
+    }
+
     pet.unequip(item, true);
-    pet.inventory.push(item);
+    pet.addToInventory(item);
 
     player.__updatePetActive();
   }
 
   equipPetItem(player, itemId) {
     const pet = this.activePet;
+    if(!this.activePet) return;
 
     const item = _.find(pet.inventory, { id: itemId });
     if(!item) return;
@@ -294,6 +302,7 @@ export class Pets {
 
   giveItemToPet(player, itemId) {
     const pet = this.activePet;
+    if(!this.activePet) return;
 
     if(pet.inventoryFull()) {
       return 'Pet inventory full.';
@@ -309,7 +318,7 @@ export class Pets {
     item._wasEquipped = true;
 
     player.unequip(item, this.__emptyGear({ slot: item.type }));
-    pet.inventory.push(item);
+    pet.addToInventory(item);
 
     player._updateEquipment();
     player.__updatePetActive();
@@ -317,6 +326,7 @@ export class Pets {
 
   takeItemFromPet(player, itemId) {
     const pet = this.activePet;
+    if(!this.activePet) return;
 
     const item = _.find(pet.inventory, { id: itemId });
     if(!item) return;

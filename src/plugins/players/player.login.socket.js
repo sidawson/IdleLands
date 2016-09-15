@@ -115,16 +115,21 @@ export const socket = (socket, primus, respond) => {
       return respond(MESSAGES.GENERIC);
     }
 
+    const oldPlayer = _.find(gameState.players, { name: player.name });
+
     if(gameState._hasTimeout(player.name)) {
       gameState._clearTimeout(player.name);
 
-      const oldPlayer = _.find(gameState.players, { name: player.name });
-      oldPlayer.quickLogin();
-      oldPlayer.update();
-      emitter.emit('player:semilogin', { playerName: player.name });
+      if(oldPlayer) {
+        oldPlayer.quickLogin();
+        oldPlayer.update();
+        emitter.emit('player:semilogin', { playerName: player.name });
+      }
 
-    } else {
-      emitter.emit(event, { playerName: player.name });
+    }
+
+    if(!oldPlayer) {
+      emitter.emit(event, { playerName: player.name, fromIp: socket.address.ip });
     }
 
     const msg = _.clone(MESSAGES.LOGIN_SUCCESS);

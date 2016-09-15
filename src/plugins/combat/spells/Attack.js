@@ -66,7 +66,7 @@ export class Attack extends Spell {
         damage
       };
 
-      const critChance = 0.01 + this.caster.liveStats.crit + (this.caster.liveStats.vorpal ? 10 : 0);
+      const critChance = 1 + this.caster.liveStats.crit + (this.caster.liveStats.vorpal ? 10 : 0);
 
       if(Spell.chance.bool({ likelihood: critChance }) && target.liveStats.aegis <= 0) {
         this.caster.$battle.tryIncrement(this.caster, 'Combat.Give.CriticalHit');
@@ -123,7 +123,7 @@ export class Attack extends Spell {
         const canUse = this.caster.liveStats[stat];
         if(canUse <= 0) return;
 
-        const chance = Spell.chance.bool({ likelihood: Math.max(0, Math.min(100, canUse * 10)) });
+        const chance = Spell.chance.bool({ likelihood: Math.max(0, Math.min(100, canUse * 5)) });
         if(!chance) return;
 
         const properEffect = _.capitalize(stat);

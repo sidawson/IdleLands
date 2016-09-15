@@ -124,7 +124,7 @@ export class Pet extends Character {
         // something in inventory is worse than the current sell item
         if(compareItem.score < sellItem.score) {
           sellItem = compareItem;
-          this.inventory.push(item);
+          this.addToInventory(item);
           this.removeFromInventory(sellItem);
         }
       }
@@ -133,12 +133,12 @@ export class Pet extends Character {
 
     } else {
 
-      if(!this.canEquip(item)) {
+      if(!this.canEquipScore(item)) {
         this.sellItem(item);
         return;
       }
 
-      this.inventory.push(item);
+      this.addToInventory(item);
     }
 
     this.updatePlayer();
@@ -164,8 +164,12 @@ export class Pet extends Character {
     return _.find(this.equipment[item.type], { name: 'nothing' });
   }
 
+  canEquipScore(item) {
+    return item.score < this.liveStats.itemFindRange;
+  }
+
   canEquip(item) {
-    return this.$slots[item.type] && item.score < this.liveStats.itemFindRange;
+    return this.$slots[item.type] && this.canEquipScore(item);
   }
 
   shouldEquip(item) {
@@ -189,6 +193,11 @@ export class Pet extends Character {
         this.unequip(nothing);
       }
     }
+  }
+
+  addToInventory(item) {
+    this.inventory.push(item);
+    this.inventory = _.sortBy(this.inventory, 'score');
   }
 
   canGainXp() {

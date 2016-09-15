@@ -94,6 +94,7 @@ export class BattleBoss extends Event {
           };
 
           _.each(player.party.players, p => {
+            if(p.$collectibles.hasCollectible(collectibleObj.name)) return;
             p.$collectibles.addCollectible(collectibleObj);
             emitter.emit('player:collectible', { player: p, collectible: collectibleObj });
           });
@@ -101,9 +102,13 @@ export class BattleBoss extends Event {
       }
     }
 
+    const affected = player.party.players;
+
     if(player.party.isBattleParty) {
       player.party.disband();
     }
+
+    return affected;
   }
 }
 
