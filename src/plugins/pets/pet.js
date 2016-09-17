@@ -102,6 +102,11 @@ export class Pet extends Character {
   findItem() {
     const item = ItemGenerator.generateItem(null, this.$_scale.itemFindBonus);
 
+    if(!this.canEquipScore(item)) {
+      this.sellItem(item);
+      return;
+    }
+
     if(this.smart.equip && this.canEquip(item)) {
       const oldItem = this.shouldEquip(item);
       if(oldItem) {
@@ -132,11 +137,6 @@ export class Pet extends Character {
       this.sellItem(sellItem);
 
     } else {
-
-      if(!this.canEquipScore(item)) {
-        this.sellItem(item);
-        return;
-      }
 
       this.addToInventory(item);
     }
@@ -182,6 +182,8 @@ export class Pet extends Character {
     if(replace) {
       this.equipment[item.type].push(this.$manager.__emptyGear({ slot: item.type }));
     }
+
+    this.recalculateStats();
   }
 
   equip(item, removeANothing = false) {
@@ -193,6 +195,8 @@ export class Pet extends Character {
         this.unequip(nothing);
       }
     }
+
+    this.recalculateStats();
   }
 
   addToInventory(item) {

@@ -16,15 +16,16 @@ export const SPECIAL_STATS_BASE = [
   { name: 'silver',          desc: '+10% minimum attack damage.', enchantMax: 1 },
   { name: 'power',           desc: '+10% maximum attack damage.', enchantMax: 1 },
   { name: 'vorpal',          desc: '+10% critical chance.', enchantMax: 1 },
-  { name: 'glowing',         desc: '+5% to all physical combat rolls. Stacks intensity.', enchantMax: 1 }
+  { name: 'glowing',         desc: '+5% to all physical combat rolls. Stacks intensity.', enchantMax: 1 },
+  { name: 'sentimentality',  desc: '1 sentimentality = 1 score', enchantMax: 500 }
 ];
 
 export const ATTACK_STATS_BASE = [
-  { name: 'prone',           desc: '+10% chance of stunning an opponent for 1 round.', enchantMax: 1 },
-  { name: 'venom',           desc: '+10% chance of inflicting venom (DoT, % of target HP) on an enemy. Stacks intensity.', enchantMax: 1 },
-  { name: 'poison',          desc: '+10% chance of inflicting poison (DoT, based on caster INT) on an enemy. Stacks intensity.', enchantMax: 1 },
-  { name: 'shatter',         desc: '+10% chance of inflicting shatter (-10% CON/DEX/AGI) on an enemy. Stacks intensity.', enchantMax: 1 },
-  { name: 'vampire',         desc: '+10% chance of inflicting vampire (health drain) on an enemy. Stacks intensity.', enchantMax: 1 }
+  { name: 'prone',           desc: '+5% chance of stunning an opponent for 1 round.', enchantMax: 1 },
+  { name: 'venom',           desc: '+5% chance of inflicting venom (DoT, % of target HP) on an enemy. Stacks intensity.', enchantMax: 1 },
+  { name: 'poison',          desc: '+5% chance of inflicting poison (DoT, based on caster INT) on an enemy. Stacks intensity.', enchantMax: 1 },
+  { name: 'shatter',         desc: '+5% chance of inflicting shatter (-10% CON/DEX/AGI) on an enemy. Stacks intensity.', enchantMax: 1 },
+  { name: 'vampire',         desc: '+5% chance of inflicting vampire (health drain) on an enemy. Stacks intensity.', enchantMax: 1 }
 ];
 
 export const BASE_STATS = ['str', 'con', 'dex', 'int', 'agi', 'luk'];

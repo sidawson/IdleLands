@@ -246,7 +246,7 @@ export class Player extends Character {
       incrementStats.push('Character.Movement.Drunk');
     }
 
-    if(this.$personalities.isActive('Solo')) {
+    if(this.$personalities.isActive('Solo') && !this.party) {
       incrementStats.push('Character.Movement.Solo');
     }
 
@@ -257,6 +257,7 @@ export class Player extends Character {
 
   unequip(item, replaceWith) {
     this.equipment[item.type] = replaceWith;
+    this.recalculateStats();
   }
 
   buildSaveObject() {
@@ -334,7 +335,6 @@ export class Player extends Character {
   }
 
   _updatePet() {
-    if(!this.$pets.activePet) return;
     this.__updatePetBuyData();
     this.__updatePetBasic();
     this.__updatePetActive();
@@ -349,6 +349,7 @@ export class Player extends Character {
   }
 
   __updatePetActive() {
+    if(!this.$pets.activePet) return;
     this.$dataUpdater(this.name, 'petactive', this.$pets.activePet.buildTransmitObject());
   }
 

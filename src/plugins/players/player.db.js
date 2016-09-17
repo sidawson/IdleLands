@@ -12,7 +12,7 @@ export class PlayerDb {
 
   async getPlayer(opts) {
     const db = await this.dbWrapper.connectionPromise();
-    const players = db.collection('players');
+    const players = db.$$collections.players;
 
     return new Promise((resolve, reject) => {
       players.find(opts).limit(1).next(async(err, doc) => {
@@ -29,9 +29,23 @@ export class PlayerDb {
     });
   }
 
+  async getOffenses(ip) {
+    const db = await this.dbWrapper.connectionPromise();
+    const players = db.$$collections.players;
+
+    return new Promise((resolve, reject) => {
+      players.find({ allIps: ip, isMuted: true }).limit(1).next(async(err, doc) => {
+        if(err) {
+          return reject({ err, msg: MESSAGES.GENERIC });
+        }
+        resolve(doc);
+      });
+    });
+  }
+
   async createPlayer(playerObject) {
     const db = await this.dbWrapper.connectionPromise();
-    const players = db.collection('players');
+    const players = db.$$collections.players;
     
     return new Promise((resolve, reject) => {
       players.insertOne(playerObject, (err) =>{
@@ -49,7 +63,7 @@ export class PlayerDb {
   async savePlayer(playerObject) {
     const savePlayerObject = playerObject.buildSaveObject();
     const db = await this.dbWrapper.connectionPromise();
-    const players = db.collection('players');
+    const players = db.$$collections.players;
 
     return new Promise((resolve, reject) => {
       players.findOneAndUpdate({ _id: savePlayerObject._id }, savePlayerObject, { upsert: true }, (err) =>{

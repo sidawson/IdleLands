@@ -313,7 +313,7 @@ export class Battle {
         p.$statistics.save();
       }
 
-      if(p.$personalities && p.$personalities.isActive('Solo')) {
+      if(p.$personalities && p.$personalities.isActive('Solo') && !p.party) {
         this.tryIncrement(p, 'CombatSolo');
       }
 

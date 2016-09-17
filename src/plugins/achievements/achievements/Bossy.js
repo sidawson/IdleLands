@@ -22,6 +22,10 @@ export class Bossy extends Achievement {
       con: tier*10
     }];
 
+    if(tier >= 4) {
+      rewards.push({ type: 'stats', itemFindRange: 100 });
+    }
+
     if(tier >= 5) {
       rewards.push({ type: 'title', title: 'Bossy' });
     }
@@ -33,7 +37,7 @@ export class Bossy extends Achievement {
     return [{
       tier,
       name: 'Bossy',
-      desc: `+${(tier*10).toLocaleString()} STR/CON for killing ${baseValue*tier} bosses.`,
+      desc: `Gain +${(tier*10).toLocaleString()} STR/CON for killing ${baseValue*tier} bosses.`,
       type: AchievementTypes.COMBAT,
       rewards
     }];

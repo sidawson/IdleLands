@@ -110,13 +110,17 @@ export class GameState {
   }
 
   getPlayerSimple(player, keys = UPDATE_KEYS) {
-    keys.push('_id', 'nameEdit', 'isMuted', 'isMod', 'name');
+    keys.push('_id', 'nameEdit', 'isMuted', 'isPardoned', 'isMod', 'name', '$currentIp');
     keys = _.uniq(keys);
     return _.pick(player, keys);
   }
 
   getPlayersSimple(keys) {
     return _.map(this.players, p => this.getPlayerSimple(p, keys));
+  }
+
+  getSomePlayersSimple(playerNames, keys) {
+    return _.compact(_.map(this.players, p => playerNames[p.name] ? this.getPlayerSimple(p, keys) : null));
   }
 
   retrievePlayer(playerName) {
