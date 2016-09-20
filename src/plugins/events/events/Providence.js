@@ -12,6 +12,7 @@ export const WEIGHT = -1;
 
 // Get the gift of the divine
 export class Providence extends Event {
+  static WEIGHT = WEIGHT;
 
   static generateProvidenceItem(multiplier = 1, t0shift = 0, t1shift = 0, t2shift = 0) {
     const baseItem = {
@@ -48,8 +49,8 @@ export class Providence extends Event {
   }
 
   static probabilities = {
-    xp: 60,
-    level: 15,
+    xp: 40,
+    level: 10,
     gender: 80,
     gold: 50,
     profession: 10,

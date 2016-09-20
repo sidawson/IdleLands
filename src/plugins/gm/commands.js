@@ -1,4 +1,6 @@
 
+import { EventHandler } from '../events/eventhandler';
+import { FindItem } from '../events/events/FindItem';
 
 export class GMCommands {
   static teleport(player, { map, x, y, toLoc }) {
@@ -27,5 +29,18 @@ export class GMCommands {
   static toggleAchievement(player, achievement) {
     player.permanentAchievements = player.permanentAchievements || {};
     player.permanentAchievements[achievement] = !player.permanentAchievements[achievement];
+  }
+
+  static setLevel(player, level) {
+    player._level.set(level - 1);
+    player.levelUp();
+  }
+
+  static giveEvent(player, event) {
+    EventHandler.doEvent(player, event);
+  }
+
+  static giveItem(player, item) {
+    FindItem.operateOn(player, item);
   }
 }
