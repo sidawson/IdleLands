@@ -147,6 +147,7 @@ export class Pet extends Character {
 
   removeFromInventory(removeItem) {
     this.inventory = _.reject(this.inventory, item => item === removeItem);
+    this.save();
   }
 
   takeTurn() {
@@ -202,6 +203,7 @@ export class Pet extends Character {
   addToInventory(item) {
     this.inventory.push(item);
     this.inventory = _.sortBy(this.inventory, 'score');
+    this.save();
   }
 
   canGainXp() {
@@ -253,11 +255,16 @@ export class Pet extends Character {
     base.$scale = this.$scale;
     base.$scaleCost = this.$scaleCost;
     base.$slots = this.$slots;
+    base.ownerEdit = this.$ownerRef.nameEdit;
     return base;
   }
 
   buildSaveObject() {
     return _.omitBy(this, (val, key) => _.startsWith(key, '$'));
+  }
+
+  save() {
+    this.$manager.save();
   }
 
 }

@@ -77,6 +77,8 @@ export class GameState {
         return reject({ msg: MESSAGES.NO_PLAYER });
       }
 
+      player.choices = _.reject(player.choices, c => c.event === 'Party' || c.event === 'PartyLeave');
+
       this.players.push(player);
       resolve(player);
     });
@@ -109,14 +111,16 @@ export class GameState {
     return this.getPlayerSimple(this.retrievePlayer(playerName), keys);
   }
 
-  getPlayerSimple(player, keys = UPDATE_KEYS) {
-    keys.push('_id', 'nameEdit', 'isMuted', 'isPardoned', 'isMod', 'name', '$currentIp');
-    keys = _.uniq(keys);
+  getPlayerSimple(player, keys = UPDATE_KEYS, override = false) {
+    if(!override) {
+      keys.push('_id', 'nameEdit', 'isMuted', 'isPardoned', 'isMod', 'name', '$currentIp');
+      keys = _.uniq(keys);
+    }
     return _.pick(player, keys);
   }
 
-  getPlayersSimple(keys) {
-    return _.map(this.players, p => this.getPlayerSimple(p, keys));
+  getPlayersSimple(keys, override) {
+    return _.map(this.players, p => this.getPlayerSimple(p, keys, override));
   }
 
   getSomePlayersSimple(playerNames, keys) {

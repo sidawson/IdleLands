@@ -257,7 +257,7 @@ export class Battle {
           this.tryIncrement(p, 'Combat.Lose');
 
           const compareLevel = _.sum(_.map(this.winners, 'level')) / this.winners.length;
-          const lostGold = Math.round(p.gold / 100);
+          const lostGold = Math.round((p.gold.__current ? p.gold.__current : p.gold) / 100);
           let lostXp = Math.round(p._xp.maximum / 20);
 
           if(compareLevel > party.level + 5) {
@@ -289,7 +289,7 @@ export class Battle {
     return {
       _id: this._id,
       name: this.name,
-      happenedAt: this.happenedAt,
+      happenedAt: new Date(this.happenedAt),
       messageData: this.messageData,
       initialParties: this._initialParties,
       parties: _.map(this.parties, party => party.buildTransmitObject())
@@ -313,7 +313,7 @@ export class Battle {
         p.$statistics.save();
       }
 
-      if(p.$personalities && p.$personalities.isActive('Solo') && !p.party) {
+      if(p.$personalities && p.$personalities.isActive('Solo') && (!p.party || p.party.isBattleParty)) {
         this.tryIncrement(p, 'CombatSolo');
       }
 

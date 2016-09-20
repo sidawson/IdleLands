@@ -94,6 +94,13 @@ export const primus = (() => {
     _.each(allSocketRequires, obj => obj.socket(spark, primus, (data) => {
       data.event = obj.event;
       respond(data);
+
+      // kill global sparks after 5 seconds
+      if(_.includes(obj.event, 'plugin:global')) {
+        setTimeout(() => {
+          spark.end();
+        }, 5000);
+      }
     }));
 
     spark.on('error', e => {
@@ -108,11 +115,15 @@ export const primus = (() => {
     // spark.join('adventurelog');
   });
 
-  const path = require('path').join(__dirname, '..', '..', 'Play');
-  fs.stat(path, e => {
-    if(e) return;
-    primus.save(`${path}/primus.gen.js`);
-  });
+  if(process.env.NODE_ENV !== 'production') {
+    _.each(['Play', 'Global'], root => {
+      const path = require('path').join(__dirname, '..', '..', root);
+      fs.stat(path, e => {
+        if(e) return;
+        primus.save(`${path}/primus.gen.js`);
+      });
+    });
+  }
 
   return primus;
 })();

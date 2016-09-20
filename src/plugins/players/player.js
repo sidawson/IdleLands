@@ -100,15 +100,26 @@ export class Player extends Character {
       return;
     }
 
+    this.attemptToDisbandSoloParty();
+
     this.moveAction();
 
     EventHandler.tryToDoEvent(this);
 
-    if(this.party) {
+    if(this.$partyName) {
       this.party.playerTakeStep(this);
     }
 
     this.save();
+  }
+
+  attemptToDisbandSoloParty() {
+    if(!this.$partyName) return;
+
+    const party = this.party;
+    if(party.players.length > 1) return;
+
+    party.disband(this, false);
   }
 
   levelUp() {
@@ -217,7 +228,7 @@ export class Player extends Character {
         break;
       }
       weight[index] = 0;
-      [index, newLoc, dir] = this.$playerMovement.pickRandomTile(this, weight, true);
+      [index, newLoc, dir] = this.$playerMovement.pickRandomTile(this, weight);
       tile = this.$playerMovement.getTileAt(this.map, newLoc.x, newLoc.y);
       attempts++;
     }
@@ -225,6 +236,14 @@ export class Player extends Character {
     this.lastDir = dir === 5 ? null : dir;
     this.x = newLoc.x;
     this.y = newLoc.y;
+
+    const mapInstance = GameState.getInstance().world.maps[this.map];
+
+    if(this.x <= 0 || this.y <= 0 || this.y > mapInstance.height || this.x > mapInstance.width) {
+      this.map = 'Norkos';
+      this.x = 10;
+      this.y = 10;
+    }
 
     this.oldRegion = this.mapRegion;
     this.mapRegion = tile.region;
@@ -255,9 +274,15 @@ export class Player extends Character {
     this.gainXp(SETTINGS.xpPerStep);
   }
 
+  equip(item) {
+    super.equip(item);
+    this.save();
+  }
+
   unequip(item, replaceWith) {
     this.equipment[item.type] = replaceWith;
     this.recalculateStats();
+    this.save();
   }
 
   buildSaveObject() {
@@ -265,7 +290,7 @@ export class Player extends Character {
   }
 
   buildTransmitObject() {
-    const badKeys = ['equipment', 'isOnline', 'stepCooldown', 'userId', 'lastDir'];
+    const badKeys = ['equipment', 'isOnline', 'stepCooldown', 'userId', 'lastDir', 'allIps'];
     return _.omitBy(this, (val, key) => {
       return _.startsWith(key, '$') || _.includes(key, 'Link') || _.includes(key, 'Steps') || _.includes(badKeys, key);
     });
