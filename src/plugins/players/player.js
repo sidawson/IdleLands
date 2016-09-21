@@ -106,9 +106,12 @@ export class Player extends Character {
 
     this.attemptToDisbandSoloParty();
 
-    this.moveAction();
-
-    EventHandler.tryToDoEvent(this);
+    try {
+      this.moveAction();
+      EventHandler.tryToDoEvent(this);
+    } catch(e) {
+      Logger.error('Player', e);
+    }
 
     if(this.$partyName) {
       this.party.playerTakeStep(this);
@@ -129,6 +132,7 @@ export class Player extends Character {
   levelUp() {
     if(this.level === this._level.maximum) return;
     super.levelUp();
+    this._saveSelf();
     emitter.emit('player:levelup', { player: this });
   }
 
