@@ -138,7 +138,7 @@ export class Player extends Character {
   }
 
   gainGold(gold = 1) {
-    gold += this.liveStats.gold;
+    gold = this.liveStats.gold(gold);
     super.gainGold(gold);
 
     if(gold > 0) {
@@ -146,10 +146,12 @@ export class Player extends Character {
     } else {
       this.$statistics.incrementStat('Character.Gold.Lose', -gold);
     }
+
+    return gold;
   }
 
   gainXp(xp = 1) {
-    xp += this.liveStats.xp;
+    xp = this.liveStats.xp(xp);
     super.gainXp(xp);
 
     if(xp > 0) {
@@ -159,6 +161,8 @@ export class Player extends Character {
     }
 
     if(this._xp.atMaximum()) this.levelUp();
+
+    return xp;
   }
 
   addChoice(messageData) {
