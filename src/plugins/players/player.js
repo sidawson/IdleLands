@@ -18,6 +18,8 @@ import { EventHandler } from '../events/eventhandler';
 import * as Events from '../events/events/_all';
 import * as Achievements from '../achievements/achievements/_all';
 
+import { DirtyChecker } from './player.dirtychecker';
+
 import { emitter } from './_emitter';
 
 @Dependencies(PlayerDb)
@@ -31,6 +33,8 @@ export class Player extends Character {
   }
 
   init(opts) {
+    this.$dirty = new DirtyChecker();
+
     super.init(opts);
 
     if(!this.joinDate)  this.joinDate = Date.now();
@@ -137,8 +141,13 @@ export class Player extends Character {
     emitter.emit('player:levelup', { player: this });
   }
 
-  gainGold(gold = 1) {
-    gold = this.liveStats.gold(gold);
+  gainGold(gold = 1, calc = true) {
+
+    let isPositive = false;
+    if(gold > 0) isPositive = true;
+
+    gold = calc ? this.liveStats.gold(gold) : gold;
+    if(_.isNaN(gold) || (isPositive && gold < 0)) gold = 0;
     super.gainGold(gold);
 
     if(gold > 0) {
@@ -150,8 +159,13 @@ export class Player extends Character {
     return gold;
   }
 
-  gainXp(xp = 1) {
-    xp = this.liveStats.xp(xp);
+  gainXp(xp = 1, calc = true) {
+
+    let isPositive = false;
+    if(xp > 0) isPositive = true;
+
+    xp = calc ? this.liveStats.xp(xp) : xp;
+    if(_.isNaN(xp) || (isPositive && xp < 0)) xp = 0;
     super.gainXp(xp);
 
     if(xp > 0) {
@@ -296,6 +310,11 @@ export class Player extends Character {
     this.equipment[item.type] = replaceWith;
     this.recalculateStats();
     this._saveSelf();
+  }
+
+  recalculateStats() {
+    super.recalculateStats();
+    this.$dirty.reset();
   }
 
   buildSaveObject() {

@@ -16,7 +16,9 @@ export class GoldBlessParty extends Event {
     this.emitMessage({ affected: player.party.players, eventText: `${eventText} [+${goldMod} gold]`, category: MessageCategories.GOLD });
 
     _.each(player.party.players, member => {
-      member.gainGold(goldMod);
+      member.gainGold(goldMod, false);
+      if(!member.$statistics) return;
+      member.$statistics.batchIncrement(['Character.Events', 'Character.Event.GoldBlessParty']);
     });
   }
 }
