@@ -48,10 +48,6 @@ export class GameState {
     return this.parties[partyName];
   }
 
-  getPlayer(playerName) {
-    return _.find(this.players, { name: playerName });
-  }
-
   static getInstance() {
     if(GameStateInstance) {
       return GameStateInstance;
@@ -103,6 +99,10 @@ export class GameState {
     remPlayer.save();
   }
 
+  getPlayer(playerName) {
+    return _.find(this.players, { name: playerName });
+  }
+
   getPlayers() {
     return this.players;
   }
@@ -114,7 +114,7 @@ export class GameState {
   getPlayerSimple(player, keys = UPDATE_KEYS, override = false) {
     if(!override) {
       keys.push('_id', 'nameEdit', 'isMuted', 'isPardoned', 'isMod', 'name', '$currentIp');
-      keys = _.uniq(keys);
+      // keys = _.uniq(keys);
     }
     return _.pick(player, keys);
   }
