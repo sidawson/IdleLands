@@ -32,6 +32,7 @@ export class BattleBoss extends Event {
     }
 
     const monsterPartyInstance = new PartyClass({ leader: bosses[0] });
+    monsterPartyInstance.isMonsterParty = true;
     if(bosses.length > 1) {
       for(let i = 1; i < bosses.length; i++) {
         monsterPartyInstance.playerJoin(bosses[i]);
@@ -54,7 +55,10 @@ export class BattleBoss extends Event {
     if(!battle.isLoser(player.party) && !battle._isTie) {
       _.each(player.party.players, p => {
         if(!p.$statistics) return;
-        p.$statistics.incrementStat(`Character.BossKills.${bossName}`);
+    
+        _.each(bosses, boss => {
+          p.$statistics.incrementStat(`Character.BossKills.${boss._name}`);
+        });
       });
 
       MonsterGenerator._setBossTimer(bossName);
@@ -111,6 +115,8 @@ export class BattleBoss extends Event {
     if(player.party.isBattleParty) {
       player.party.disband();
     }
+
+    monsterPartyInstance.disband();
 
     return affected;
   }
