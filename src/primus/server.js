@@ -83,12 +83,16 @@ export const primus = (() => {
   primus.addPlayer = (playerName, spark) => {
     if(!primus.players[playerName]) primus.players[playerName] = [];
     _.each(primus.players[playerName], spark => primus.delPlayer(playerName, spark));
+    if(!primus.players[playerName]) primus.players[playerName] = [];
     primus.players[playerName].push(spark);
   };
 
   primus.delPlayer = (playerName, spark) => {
     primus.players[playerName] = _.without(primus.players[playerName], spark);
     spark.end();
+    if(!primus.players[playerName].length) {
+      delete primus.players[playerName];
+    }
   };
 
   primus.emitToPlayers = (players = [], data) => {
@@ -135,9 +139,14 @@ export const primus = (() => {
 
   if(process.env.NODE_ENV !== 'production') {
     _.each(['Play', 'Global'], root => {
-      const path = require('path').join(__dirname, '..', '..', root);
+      const path = require('path').join(__dirname, '..', '..', '..', root);
       fs.stat(path, e => {
-        if(e) return;
+        if(e) {
+          Logger.error('Primus:Generate', e);
+          return;
+        }
+        
+        Logger.info('Primus:Generate', `${root} is installed. Generating a Primus file for it.`);
         primus.save(`${path}/primus.gen.js`);
       });
     });

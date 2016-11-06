@@ -147,6 +147,9 @@ export class Battle {
 
     this.emitEvents(player, 'TakeTurn');
 
+    // Don't allow player to regen if they kill themselves
+    if(!this.isPlayerAlive(player)) return;
+
     const hpRegen = player.liveStats.hpregen;
     const mpRegen = player.liveStats.mpregen;
 
@@ -287,7 +290,14 @@ export class Battle {
       damage = Math.max(0, damage - target.liveStats.damageReduction);
       this.tryIncrement(source, 'Combat.Give.Damage', damage);
       this.tryIncrement(target, 'Combat.Receive.Damage', damage);
+
+      const overkill = damage - target.hp;
       target._hp.sub(damage);
+      // TODO Display overkill damage in battle log.
+      if (target.hp === 0) {
+        this.tryIncrement(source, 'Combat.Give.Overkill', overkill);
+        this.tryIncrement(target, 'Combat.Receive.Overkill', overkill);
+      }
     } else if (damage < 0) {
       this.healDamage(target, Math.abs(damage), source);
     }

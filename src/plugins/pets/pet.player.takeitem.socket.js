@@ -1,5 +1,6 @@
 
 import { GameState } from '../../core/game-state';
+import { Logger } from '../../shared/logger';
 
 export const event = 'plugin:pet:takeitem';
 export const description = 'Take an item from your pet and equip it.';
@@ -14,6 +15,7 @@ export const socket = (socket, primus, respond) => {
 
     const player = GameState.getInstance().getPlayer(playerName);
     if(!player) return;
+    Logger.info('Socket:Pet:Take', `${playerName} (${socket.address.ip}) taking ${itemId} from pet.`);
 
     const message = player.$pets.takeItemFromPet(player, itemId);
 
