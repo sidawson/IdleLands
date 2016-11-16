@@ -335,12 +335,12 @@ export class Pets {
     const item = _.find(pet.inventory, { id: itemId });
     if(!item) return;
 
-    if(!player.equipment[item.type].isNothing) {
-      return 'Cannot equip over something.';
-    }
-
     if(!player.canEquip(item) && !item._wasEquipped) {
       return 'Item too powerful for you.';
+    }
+
+    if(player.equipment[item.type] && !player.equipment[item.type].isNothing) {
+      pet.addToInventory(player.equipment[item.type]);
     }
 
     player.equip(item);

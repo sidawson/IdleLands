@@ -60,6 +60,7 @@ export class Player extends Character {
   quickLogin() {
     this.$updateAchievements = true;
     this.$updateCollectibles = true;
+    this._updateParty();
 
     if(this.isMod) {
       this.emitGMData();
@@ -179,10 +180,33 @@ export class Player extends Character {
     return xp;
   }
 
+  premiumTier() {
+    const tier = this.$achievements.premiumTier();
+    this._premiumTier = tier;
+    this.$statistics.setStat('Game.PremiumTier', tier);
+    return tier;
+  }
+
+  _$priceReductionMultiplier() {
+    const premiumTier = this.premiumTier();
+    return 1 - (0.1 * premiumTier);
+  }
+
+  _$choiceLimit() {
+    const premiumTier = this.premiumTier();
+    return SETTINGS.maxChoices + (SETTINGS.maxChoices * premiumTier);
+  }
+
+  _$maxItemBoost() {
+    const premiumTier = this.premiumTier();
+    return 0.5 * premiumTier;
+  }
+
   addChoice(messageData) {
     this.choices.push(messageData);
+    this._choiceLimit = this._$choiceLimit();
 
-    if(this.choices.length > SETTINGS.maxChoices) {
+    if(this.choices.length > this._choiceLimit) {
       if(this.$personalities.isAnyActive(['Affirmer', 'Denier', 'Indecisive'])) {
         const choice = this.choices[0];
         if(_.includes(choice.choices, 'Yes') && this.$personalities.isActive('Affirmer')) {
