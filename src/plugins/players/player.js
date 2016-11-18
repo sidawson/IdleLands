@@ -142,31 +142,27 @@ export class Player extends Character {
     emitter.emit('player:levelup', { player: this });
   }
 
-  gainGold(gold = 1, calc = true) {
-
-    let isPositive = false;
-    if(gold > 0) isPositive = true;
-
-    gold = calc ? this.liveStats.gold(gold) : gold;
-    if(_.isNaN(gold) || (isPositive && gold < 0)) gold = 0;
+  gainGold(baseGold = 1, calc = true) {
+    
+    const gold = calc ? this.liveStats.gold(baseGold) : baseGold;
+    if(_.isNaN(gold) || gold === 0 || Math.sign(gold) !== Math.sign(baseGold)) return 0;
+    
     super.gainGold(gold);
-
+    
     if(gold > 0) {
       this.$statistics.incrementStat('Character.Gold.Gain', gold);
     } else {
       this.$statistics.incrementStat('Character.Gold.Lose', -gold);
     }
-
+    
     return gold;
   }
 
-  gainXp(xp = 1, calc = true) {
+  gainXp(baseXp = 1, calc = true) {
 
-    let isPositive = false;
-    if(xp > 0) isPositive = true;
-
-    xp = calc ? this.liveStats.xp(xp) : xp;
-    if(_.isNaN(xp) || (isPositive && xp < 0)) xp = 0;
+    const xp = calc ? this.liveStats.xp(baseXp) : baseXp;
+    if(_.isNaN(xp) || xp === 0 || Math.sign(xp) !== Math.sign(baseXp)) return 0;
+    
     super.gainXp(xp);
 
     if(xp > 0) {
@@ -363,12 +359,16 @@ export class Player extends Character {
     this.saveSteps--;
 
     if(this.saveSteps <= 0) {
-      this._saveSelf();
-      this.$statistics.save();
-      this.$pets.save();
+      this._save();
       this.saveSteps = SETTINGS.saveSteps;
     }
     this.update();
+  }
+
+  _save() {
+    this._saveSelf();
+    this.$statistics.save();
+    this.$pets.save();
   }
 
   checkAchievements() {
@@ -376,14 +376,18 @@ export class Player extends Character {
     this.achievementSteps--;
 
     if(this.achievementSteps <= 0) {
-      this.$pets.checkPets(this);
-      const newAchievements = this.$achievements.checkAchievements(this);
-      if(newAchievements.length > 0) {
-        emitter.emit('player:achieve', { player: this, achievements: newAchievements });
-        this.$personalities.checkPersonalities(this);
-      }
+      this._checkAchievements();
 
       this.achievementSteps = SETTINGS.achievementSteps;
+    }
+  }
+
+  _checkAchievements() {
+    this.$pets.checkPets(this);
+    const newAchievements = this.$achievements.checkAchievements(this);
+    if(newAchievements.length > 0) {
+      emitter.emit('player:achieve', { player: this, achievements: newAchievements });
+      this.$personalities.checkPersonalities(this);
     }
   }
 
