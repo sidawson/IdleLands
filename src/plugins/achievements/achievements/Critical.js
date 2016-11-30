@@ -7,7 +7,8 @@ export class Critical extends Achievement {
     const totalCrits = player.$statistics.getStat('Combat.Give.CriticalHit');
 
     let tier = 1;
-    while(totalCrits >= tier * 50) {
+    const baseValue = 25;
+    while(totalCrits >= baseValue * Math.pow(2, tier-1)) {
       tier++;
     }
 
@@ -21,19 +22,19 @@ export class Critical extends Achievement {
       dexDisplay: `${tier}%`
     }];
 
-    if(tier >= 10) {
+    if(tier >= 6) {
       rewards.push({ type: 'title', title: 'Critical' });
       rewards.push({ type: 'stats', crit: 1 });
     }
 
-    if(tier >= 11) {
+    if(tier >= 7) {
       rewards.push({ type: 'petattr', petattr: 'a giant bullseye with a few arrows in it' });
     }
 
     return [{
       tier,
       name: 'Critical',
-      desc: `Gain ${tier}% DEX for having ${(tier*50).toLocaleString()} critical hits.`,
+      desc: `Gain ${tier}% DEX for having ${(baseValue * Math.pow(2, tier-1)).toLocaleString()} critical hits.`,
       type: AchievementTypes.COMBAT,
       rewards
     }];
