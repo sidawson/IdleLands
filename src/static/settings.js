@@ -66,6 +66,10 @@ class Settings {
       winter: {
         start: new Date('Dec 1'),
         end:   new Date('Dec 31')
+      },
+      valentine: {
+        start: new Date('Feb 1'),
+        end:   new Date('Feb 28')
       }
     };
 
@@ -173,7 +177,9 @@ class Settings {
       83: 'TreeStump',
       84: 'AntiShrine',
       85: 'Shrine',
-      86: 'Merchant'
+      86: 'Merchant',
+      87: 'JailDoor',
+      88: 'StoneJailDoor'
     };
 
     this.revGidMap = _.invert(this.gidMap);
