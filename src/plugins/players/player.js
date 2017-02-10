@@ -32,8 +32,9 @@ export class Player extends Character {
     this.$dataUpdater = DataUpdater;
   }
 
-  init(opts) {
+  init(opts, save = true) {
     this.$dirty = new DirtyChecker();
+    this.$canSave = save;
 
     super.init(opts);
 
@@ -55,6 +56,8 @@ export class Player extends Character {
     if(this.isMod) {
       this.emitGMData();
     }
+
+    this.$canSave = true;
   }
 
   quickLogin() {
@@ -91,6 +94,11 @@ export class Player extends Character {
     const viewName = this.nameEdit ? this.nameEdit : this.name;
     if(this.title) return `${viewName}, the ${this.title}`;
     return viewName;
+  }
+
+  get deathMessage() {
+    if(this._deathMessage) return this._deathMessage;
+    return this.randomDeathMessage();
   }
 
   takeTurn() {
@@ -245,8 +253,14 @@ export class Player extends Character {
   }
 
   changeTitle(newTitle) {
-    if(newTitle && !_.includes(this.$achievements.titles(), newTitle)) return;
+    const titles = this.$achievements.titles();
+    if(newTitle && !_.includes(titles, newTitle)) return;
     this.title = newTitle;
+    if(newTitle) {
+      this._deathMessage = this.$achievements.getDeathMessageForTitle(newTitle);
+    } else {
+      this._deathMessage = null;
+    }
     emitter.emit('player:changetitle', { player: this });
   }
 
@@ -347,12 +361,15 @@ export class Player extends Character {
 
   buildTransmitObject() {
     const badKeys = ['equipment', 'isOnline', 'stepCooldown', 'userId', 'lastDir', 'allIps'];
-    return _.omitBy(this, (val, key) => {
+    const obj = _.omitBy(this, (val, key) => {
       return _.startsWith(key, '$') || _.includes(key, 'Link') || _.includes(key, 'Steps') || _.includes(badKeys, key);
     });
+    obj.ascensionLevel = this.ascensionLevel;
+    return obj;
   }
 
   _saveSelf() {
+    if(!this.$canSave) return;
     this.$playerDb.savePlayer(this);
   }
 
@@ -446,28 +463,48 @@ export class Player extends Character {
     this.$dataUpdater(this.name, 'petactive', this.$pets.activePet.buildTransmitObject());
   }
 
+  __updateFestivals() {
+    this.$dataUpdater(this.name, 'festivals', GameState.getInstance().festivals);
+  }
+
+  _updateSystem() {
+    this.__updateFestivals();
+  }
+
   update() {
     this._updatePlayer();
     this._updateParty();
+    this._updateSystem();
 
     if(this.$updateEquipment) {
       this._updateEquipment();
     }
   }
 
-  get hasAscended() {
+  get ascensionLevel() {
     return this.$statistics.getStat('Character.Ascension.Times');
   }
 
   ascend() {
     if(!this._level.atMaximum()) return;
+    const currentAscensionLevel = this.$statistics.getStat('Character.Ascension.Times');
     this.$statistics.incrementStat('Character.Ascension.Times');
 
     this.$statistics.incrementStat('Character.Ascension.Gold', this.gold);
     this.gold = 0;
 
+    _.each(this.$pets.$pets, pet => {
+      this.$statistics.incrementStat('Character.Ascension.Gold', pet.gold.getTotal());
+      pet.gold.set(0);
+    });
+
     this.$statistics.incrementStat('Character.Ascension.ItemScore', this.itemScore);
     this.generateBaseEquipment();
+
+    _.each(this.$pets.$pets, pet => {
+      pet.unequipAll();
+      pet.inventory = [];
+    });
 
     this.$statistics.incrementStat('Character.Ascension.Levels', this.level);
     this._level.maximum += 50;
@@ -484,8 +521,21 @@ export class Player extends Character {
 
     this.$personalities.turnAllOff(this);
 
+    this.recalculateStats();
     this._checkAchievements();
     this.update();
     this.save();
+
+    this.$pets.save();
+
+    GameState.getInstance().addFestival({
+      name: `${this.name}'s Ascension`,
+      message: `${this.name} has ascended! +20% XP for everyone for 24 hours!`,
+      hourDuration: 24,
+      bonuses: {
+        xp: 0.2 + (0.15 * currentAscensionLevel),
+        gold: 0.2 + (0.15 * currentAscensionLevel)
+      }
+    });
   }
 }

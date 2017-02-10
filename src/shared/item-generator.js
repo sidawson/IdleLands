@@ -44,11 +44,12 @@ export class ItemGenerator extends Generator {
     return equipment;
   }
 
-  static getAllTreasure(chestName) {
+  static getAllTreasure(chestName, player) {
     return _.map(Chests[chestName].items, itemName => {
       const item = new Equipment(Treasures[itemName]);
       item.name = itemName;
       item.itemClass = 'guardian';
+      this.tryToVectorize(item, player.level);
       return item;
     });
   }
@@ -63,7 +64,7 @@ export class ItemGenerator extends Generator {
     return itemClass;
   }
   
-  static generateItem(type, bonus = 0) {
+  static generateItem(type, bonus = 0, genLevel = 0) {
     if(!type) {
       type = _.sample(this.types);
     }
@@ -72,6 +73,7 @@ export class ItemGenerator extends Generator {
     const itemInst = new Equipment(baseItem);
 
     this.addPropertiesToItem(itemInst, bonus);
+    this.tryToVectorize(itemInst, genLevel);
 
     itemInst._baseScore = itemInst.score;
     itemInst.type = type;
@@ -101,6 +103,59 @@ export class ItemGenerator extends Generator {
     if(chance.integer({ min: 0, max: 85 }) <= 1+bonus) {
       this.mergePropInto(item, _.sample(ObjectAssets.suffix));
     }
+  }
+
+  static tryToVectorize(item, level) {
+    if(!item.vector && (level <= 100 || chance.bool({ likelihood: 95 }))) return;
+
+    const funcs = [
+      { name: 'linear',           modify: (stat) => stat + stat },
+      { name: 'scalar',           modify: (stat) => stat * stat },
+      { name: 'vector',           modify: (stat) => Math.round(stat + Math.sqrt(stat)) },
+      { name: 'parabolic',        modify: (stat) => stat * chance.bool() ? -2 : 2 },
+      { name: 'quadratic',        modify: (stat) => Math.round(stat * Math.log(stat)) },
+      { name: 'exponential',      modify: (stat) => Math.round(stat * Math.sqrt(stat)) },
+
+      { name: 'leve-linear',      modify: (stat) => stat + level },
+      { name: 'leve-scalar',      modify: (stat) => stat * level },
+      { name: 'leve-vector',      modify: (stat) => Math.round(stat + Math.sqrt(level)) },
+      { name: 'leve-quadratic',   modify: (stat) => Math.round(stat * Math.log(level)) },
+      { name: 'leve-exponential', modify: (stat) => Math.round(stat * Math.sqrt(level)) }
+    ];
+
+    const weights = [
+      6,
+      3,
+      5,
+      2,
+      4,
+      1,
+      6,
+      3,
+      5,
+      4,
+      1
+    ];
+
+    const func = chance.weighted(funcs, weights);
+
+    const validKeys = _(item)
+      .omitBy((val, prop) => {
+        return _.includes(['enchantLevel', 'foundAt', '_calcScore', '_baseScore', 'vector'], prop)
+            || val === 0
+            || _.isString(item[prop]);
+      })
+      .keys()
+      .value();
+
+    const numKeys = item.vector ? Math.min(validKeys.length, item.vector) : chance.integer({ min: 1, max: validKeys.length });
+    const chosenKeys = _.sampleSize(validKeys, numKeys);
+
+    _.each(chosenKeys, key => {
+      item[key] = func.modify(item[key]);
+    });
+
+    item.name = `${func.name} ${item.name}`;
   }
 
   static cleanUpItem(item) {

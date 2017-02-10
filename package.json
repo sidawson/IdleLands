@@ -18,7 +18,7 @@
     "generate:effectdoc": "cross-env NO_START_GAME=1 node -r babel-polyfill -r babel-register npm/generate-effectdoc",
     "generate:spelldoc": "cross-env NO_START_GAME=1 node -r babel-polyfill -r babel-register npm/generate-spelldoc",
     "generate:classdoc": "cross-env NO_START_GAME=1 node -r babel-polyfill -r babel-register npm/generate-classdoc",
-	  "generate:petdoc": "cross-env NO_START_GAME=1 node -r babel-polyfill -r babel-register npm/generate-petdoc",
+    "generate:petdoc": "cross-env NO_START_GAME=1 node -r babel-polyfill -r babel-register npm/generate-petdoc",
     "generate:apidoc": "cross-env NO_START_GAME=1 node -r babel-polyfill -r babel-register npm/generate-apidoc",
     "gitfix": "git add docs",
     "gen:items": "node test/gen/items"
@@ -84,6 +84,7 @@
     "minimist": "^1.2.0",
     "mongodb": "^2.1.18",
     "newrelic": "^1.30.1",
+    "node-schedule": "^1.2.0",
     "primus": "^5.2.2",
     "primus-emit": "^1.0.0",
     "primus-multiplex": "^3.2.0",

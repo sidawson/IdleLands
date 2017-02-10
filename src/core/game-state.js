@@ -2,6 +2,7 @@
 import _ from 'lodash';
 
 import { World } from './world/world';
+import { Festivals } from '../plugins/festivals/festivals';
 import { Logger } from '../shared/logger';
 import { constitute } from '../shared/di-wrapper';
 import { MESSAGES } from '../static/messages';
@@ -9,7 +10,7 @@ import { MESSAGES } from '../static/messages';
 import { PlayerLoad } from '../plugins/players/player.load';
 
 const UPDATE_KEYS = ['x', 'y', 'map', 'gender', 'professionName', 'level', 'name', 'title'];
-const EXTRA_KEYS = ['_id', 'nameEdit', 'isMuted', 'isPardoned', 'isMod', 'name', '$currentIp'];
+const EXTRA_KEYS = ['_id', 'nameEdit', 'isMuted', 'isPardoned', 'isMod', 'name', '$currentIp', 'ascensionLevel'];
 
 let GameStateInstance = null;
 
@@ -27,6 +28,21 @@ export class GameState {
 
     Logger.info('GameState', 'Creating world.');
     this.world = constitute(World);
+
+    Logger.info('GameState', 'Loading festivals.');
+    this.festivalContainer = constitute(Festivals);
+  }
+
+  cancelFestival(festivalId) {
+    this.festivalContainer.removeFestivalById(festivalId);
+  }
+
+  addFestival(festival) {
+    this.festivalContainer.addFestival(festival);
+  }
+
+  get festivals() {
+    return this.festivalContainer.festivals;
   }
 
   _hasTimeout(playerName) {
@@ -109,15 +125,15 @@ export class GameState {
   }
 
   getPlayerNameSimple(playerName, keys) {
-    return this.getPlayerSimple(this.retrievePlayer(playerName), keys);
+    return this.getPlayerSimple(this.retrievePlayer(playerName), keys, false);
   }
 
   getPlayerSimple(player, keys = UPDATE_KEYS, override = false) {
     if(!override) {
       keys = keys.concat(EXTRA_KEYS);
-      // keys = _.uniq(keys);
     }
-    return _.pick(player, keys);
+    const obj = _.pick(player, keys);
+    return obj;
   }
 
   getPlayersSimple(keys, override) {
@@ -133,5 +149,11 @@ export class GameState {
     if(playerObject) return playerObject;
 
     return this.playerLoad.loadPlayer(playerName);
+  }
+
+  emitFestivals() {
+    _.each(this.players, player => {
+      player.__updateFestivals();
+    });
   }
 }

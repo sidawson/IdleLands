@@ -2,7 +2,7 @@
 import { Event } from '../event';
 import { MessageCategories } from '../../../shared/adventure-log';
 
-export const WEIGHT = 1;
+export const WEIGHT = 3;
 
 // Switcheroo an item (flip any stat between positive and negative)
 export class Switcheroo extends Event {
@@ -10,7 +10,10 @@ export class Switcheroo extends Event {
 
   static operateOn(player) {
     const item = this.pickValidItem(player);
+    if(!item) return;
+
     const stat = this.pickStat(item);
+    if(!stat) return;
 
     const eventText = this.eventText('flipStat', player, { item: item.fullname });
 

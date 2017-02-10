@@ -100,7 +100,7 @@ export class Pet extends Character {
   }
 
   findItem() {
-    const item = ItemGenerator.generateItem(null, this.$_scale.itemFindBonus);
+    const item = ItemGenerator.generateItem(null, this.$_scale.itemFindBonus, this.level);
 
     if(!this.canEquipScore(item)) {
       this.sellItem(item);
@@ -178,7 +178,17 @@ export class Pet extends Character {
     return item.score > compareItem.score ? compareItem : false;
   }
 
+  unequipAll() {
+    _.each(this.equipment, (arr) => {
+      _.each(arr, item => {
+        this.unequip(item, true);
+      });
+    });
+  }
+
   unequip(item, replace = false) {
+    if(item.type === 'soul') return;
+
     this.equipment[item.type] = _.reject(this.equipment[item.type], checkItem => checkItem === item);
     if(replace) {
       this.equipment[item.type].push(this.$manager.__emptyGear({ slot: item.type }));
@@ -240,10 +250,15 @@ export class Pet extends Character {
     });
   }
 
+  _doLevelUpgrade() {
+    this._level.maximum = this.$_scale.maxLevel;
+    this.levelUp();
+  }
+
   doUpgrade(attr) {
     switch(attr) {
       case 'goldStorage':             return this.gold.maximum = this.$_scale.goldStorage;
-      case 'maxLevel':                return this._level.maximum = this.$_scale.maxLevel;
+      case 'maxLevel':                return this._doLevelUpgrade();
       case 'itemFindTimeDuration':    return this._setNextItemFind();
       case 'itemFindRangeMultiplier': return this.updateSoul();
       case 'itemSellMultiplier':      return this.updateSoul();

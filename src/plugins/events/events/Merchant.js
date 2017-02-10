@@ -28,7 +28,7 @@ export class Merchant extends Event {
       return [player];
     }
 
-    const item = ItemGenerator.generateItem(null, player.calcLuckBonusFromValue(player.stats.luk + player.liveStats.merchantItemGeneratorBonus + merchantBonus));
+    const item = ItemGenerator.generateItem(null, player.calcLuckBonusFromValue(player.stats.luk + player.liveStats.merchantItemGeneratorBonus + merchantBonus), player.level);
     if(!player.canEquip(item)) {
       const playerItem = player.equipment[item.type];
       const text = playerItem.score > item.score ? 'weak' : 'strong';
@@ -51,7 +51,7 @@ export class Merchant extends Event {
     }
 
     const id = Event.chance.guid();
-    const message = `Would you like to buy «${item.fullname}» for ${cost} gold?`;
+    const message = `Would you like to buy «${item.fullname}» for ${cost.toLocaleString()} gold?`;
     const eventText = this.eventText('merchant', player, { item: item.fullname, shopGold: cost });
     const extraData = { item, cost, eventText };
 

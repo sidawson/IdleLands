@@ -60,7 +60,7 @@ export const SomePlayersPostMove = (updatedPlayers) => {
 };
 
 export const PlayerUpdateAll = (playerId, keys) => {
-  const data = GameState.getInstance().getPlayerNameSimple(playerId, keys);
+  const data = GameState.getInstance().getPlayerNameSimple(playerId, keys, true);
   primus.forEach((spark, next) => {
     spark.write({ playerListOperation: 'update', data });
     next();

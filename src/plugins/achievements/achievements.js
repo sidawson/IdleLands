@@ -49,6 +49,7 @@ export class Achievements {
       .values()
       .map(achi => achi.rewards)
       .flattenDeep()
+      .compact()
       .filter(reward => reward.type === 'petattr')
       .map(reward => reward.petattr)
       .value().concat(SETTINGS.validPetAttributes);
@@ -59,9 +60,24 @@ export class Achievements {
       .values()
       .map(achi => achi.rewards)
       .flattenDeep()
+      .compact()
       .filter(reward => reward.type === 'title')
       .map(reward => reward.title)
       .value();
+  }
+
+  getDeathMessageForTitle(title) {
+    const titleReward = _(this.achievements)
+      .values()
+      .map(achi => achi.rewards)
+      .flattenDeep()
+      .compact()
+      .filter(reward => reward.type === 'title')
+      .filter(reward => reward.title === title)
+      .value()[0];
+
+    if(titleReward) return titleReward.deathMessage;
+    return '';
   }
 
   tiers() {
@@ -75,8 +91,9 @@ export class Achievements {
   _allAchievements(player) {
     return _(AllAchievements)
       .values()
-      .map(ach => ach.achievementData(player))
-      .flatten()
+      .map(ach => ach.achievementData(player) || [])
+      .flattenDeep()
+      .compact()
       .value();
   }
 
