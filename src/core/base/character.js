@@ -31,6 +31,10 @@ export class Character {
       this._level.maximum = SETTINGS.maxLevel;
     }
 
+    if(this._xp.__current > this._xp.maximum) {
+      this._xp.__current = this._xp.maximum;
+    }
+
     _.each(['_hp', '_mp', '_xp', '_level', '_special'], stat => {
       if(_.isNaN(this[stat].__current)) this[stat].__current = 0;
       this[stat].__proto__ = RestrictedNumber.prototype;
@@ -100,6 +104,10 @@ export class Character {
     return _.reduce(_.flatten(_.values(this.equipment)), (prev, cur) => {
       return prev + cur.score;
     }, 0);
+  }
+
+  get score() {
+    return this.itemScore;
   }
 
   get spells() {
@@ -188,7 +196,21 @@ export class Character {
   }
 
   levelUpXpCalc(level) {
-    return Math.floor(100 + (400 * Math.pow(level, 1.71)));
+    let xp = Math.floor(100 + (400 * Math.pow(level, 1.71)));
+
+    if(level > 200) {
+      const modifier = level - 200;
+      xp += (xp * (modifier / 100));
+
+      if(level >= this._level.maximum - SETTINGS.ascensionLevelBoost) {
+        const levelsTilMax = this._level.maximum - level;
+        const multiplier = SETTINGS.ascensionXpCurve * (SETTINGS.ascensionLevelBoost - levelsTilMax);
+
+        xp += (xp * (multiplier / 100));
+      }
+    }
+
+    return Math.floor(xp);
   }
 
   gainGold(gold = 1) {

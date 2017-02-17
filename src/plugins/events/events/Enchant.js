@@ -6,7 +6,7 @@ import { MessageCategories } from '../../../shared/adventure-log';
 
 import { SPECIAL_STATS_BASE, ATTACK_STATS_BASE } from '../../../shared/stat-calculator';
 
-export const WEIGHT = 2;
+export const WEIGHT = 6;
 
 // Enchant an item (+special stat, +50 to random stat, +1 enchantLevel)
 export class Enchant extends Event {
@@ -14,7 +14,12 @@ export class Enchant extends Event {
 
   static operateOn(player) {
     const item = this.pickValidItemForEnchant(player);
-    if(!item) return [];
+    if(!item) {
+      const eventText = this._parseText('%player attempted to enchant %hisher gear, but it failed!', player);
+      this.emitMessage({ affected: [player], eventText, category: MessageCategories.ITEM });
+      player.$statistics.incrementStat('Character.Item.OverEnchant');
+      return [];
+    }
 
     let eventText = this.eventText('enchant', player, { item: item.fullname });
 

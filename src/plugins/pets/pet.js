@@ -12,6 +12,9 @@ import { ItemGenerator } from '../../shared/item-generator';
 export class Pet extends Character {
 
   get fullname() {
+    if(!this.attr) {
+      return `${this.name}, the ${this.$petId}`;
+    }
     return `${this.name}, the ${this.$petId} with ${this.attr}`;
   }
 
@@ -166,7 +169,7 @@ export class Pet extends Character {
   }
 
   canEquipScore(item) {
-    return item.score < this.liveStats.itemFindRange;
+    return item.score < this.liveStats.itemFindRange && item.score > 0;
   }
 
   canEquip(item) {

@@ -3,21 +3,26 @@
 
 ## Table of Contents
 
-1. Archer
-2. Barbarian
-3. Bard
-4. Bitomancer
-5. Cleric
-6. Fighter
-7. Generalist
-8. Jester
-9. Mage
-10. MagicalMonster
-11. Monster
-12. Necromancer
-13. Pirate
-14. Rogue
-15. SandwichArtist
+1. [Archer](#archer)
+2. [Barbarian](#barbarian)
+3. [Bard](#bard)
+4. [Beatomancer](#beatomancer)
+5. [Bitomancer](#bitomancer)
+6. [Cleric](#cleric)
+7. [Clockborg](#clockborg)
+8. [Druid](#druid)
+9. [Fencer](#fencer)
+10. [Fighter](#fighter)
+11. [Generalist](#generalist)
+12. [Jester](#jester)
+13. [Mage](#mage)
+14. [MagicalMonster](#magicalmonster)
+15. [Monster](#monster)
+16. [Necromancer](#necromancer)
+17. [Pirate](#pirate)
+18. [Rogue](#rogue)
+19. [SandwichArtist](#sandwichartist)
+20. [Trickster](#trickster)
 
 
 ## Archer
@@ -71,6 +76,13 @@ Purity From The Stars ([LightFromTheStars 2](../src/plugins/combat/spells/LightF
 Shining Bright Against the Night ([PaleMoonlight 2](../src/plugins/combat/spells/PaleMoonlight.js)) | Buff | 50 |  | 
 You Shant Get Away ([ThereIsNoEscape 2](../src/plugins/combat/spells/ThereIsNoEscape.js)) | Buff | 50 |  | 
 Chant of Obliteration ([LitanyOfPain 3](../src/plugins/combat/spells/LitanyOfPain.js)) | Debuff | 100 |  | Ancient Lute
+
+
+## Beatomancer
+
+Name | Element | Level | Description | Required Collectibles
+---- | ------- | ----- | ----------- | ---------------------
+attack ([Attack 1](../src/plugins/combat/spells/Attack.js)) | Physical | 1 | A simple attack that uses STR to deal damage. | 
 
 
 ## Bitomancer
@@ -127,6 +139,27 @@ restore group ([CureGroup 3](../src/plugins/combat/spells/CureGroup.js)) | Heal 
 titan strength ([ClericStrength 4](../src/plugins/combat/spells/ClericStrength.js)) | Buff | 95 |  | 
 revitalize ([Cure 4](../src/plugins/combat/spells/Cure.js)) | Heal | 115 |  | Strand of Fate
 revitalize group ([CureGroup 4](../src/plugins/combat/spells/CureGroup.js)) | Heal | 145 |  | Gauntlet
+
+
+## Clockborg
+
+Name | Element | Level | Description | Required Collectibles
+---- | ------- | ----- | ----------- | ---------------------
+attack ([Attack 1](../src/plugins/combat/spells/Attack.js)) | Physical | 1 | A simple attack that uses STR to deal damage. | 
+
+
+## Druid
+
+Name | Element | Level | Description | Required Collectibles
+---- | ------- | ----- | ----------- | ---------------------
+attack ([Attack 1](../src/plugins/combat/spells/Attack.js)) | Physical | 1 | A simple attack that uses STR to deal damage. | 
+
+
+## Fencer
+
+Name | Element | Level | Description | Required Collectibles
+---- | ------- | ----- | ----------- | ---------------------
+attack ([Attack 1](../src/plugins/combat/spells/Attack.js)) | Physical | 1 | A simple attack that uses STR to deal damage. | 
 
 
 ## Fighter
@@ -292,5 +325,12 @@ week-old ([DayOldBread 2](../src/plugins/combat/spells/DayOldBread.js)) | Physic
 food brawl ([FoodFight 3](../src/plugins/combat/spells/FoodFight.js)) | Physical | 75 |  | 
 well-done ([ToastedSandwich 3](../src/plugins/combat/spells/ToastedSandwich.js)) | Fire | 90 |  | 
 month-old ([DayOldBread 3](../src/plugins/combat/spells/DayOldBread.js)) | Physical | 100 |  | Funny Fungus
+
+
+## Trickster
+
+Name | Element | Level | Description | Required Collectibles
+---- | ------- | ----- | ----------- | ---------------------
+attack ([Attack 1](../src/plugins/combat/spells/Attack.js)) | Physical | 1 | A simple attack that uses STR to deal damage. | 
 
 

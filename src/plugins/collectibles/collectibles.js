@@ -27,13 +27,24 @@ export class Collectibles {
 
     // update collectibles on login
     _.each(_.values(opts.collectibles), coll => {
-      if(!allCollectibles[coll.name]) return;
+      if(!allCollectibles[coll.name]) {
+        delete opts.collectibles[coll.name];
+        return;
+      }
       coll.rarity = allCollectibles[coll.name].rarity || 'basic';
       coll.description = allCollectibles[coll.name].flavorText;
       coll.storyline = allCollectibles[coll.name].storyline;
     });
 
     _.extend(this, opts);
+
+    if(_.isUndefined(this.uniqueCollectibles)) {
+      this.save();
+    }
+  }
+
+  calcUniqueCollectibles() {
+    return _.uniq(_.keys(this.collectibles).concat(_.keys(this.priorCollectibles))).length;
   }
 
   reset() {
@@ -75,6 +86,7 @@ export class Collectibles {
   }
 
   save() {
+    this.uniqueCollectibles = this.calcUniqueCollectibles();
     this.collectiblesDb.saveCollectibles(this);
   }
 }

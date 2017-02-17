@@ -10,7 +10,9 @@ import { MESSAGES } from '../static/messages';
 import { PlayerLoad } from '../plugins/players/player.load';
 
 const UPDATE_KEYS = ['x', 'y', 'map', 'gender', 'professionName', 'level', 'name', 'title'];
-const EXTRA_KEYS = ['_id', 'nameEdit', 'isMuted', 'isPardoned', 'isMod', 'name', '$currentIp', 'ascensionLevel'];
+const EXTRA_KEYS = ['_id', 'nameEdit', 'isMuted', 'isPardoned', 'isMod', 'name', '$shard', '$currentIp', 'ascensionLevel'];
+
+import { AddFestivalRedis, CancelFestivalRedis } from '../plugins/scaler/redis';
 
 let GameStateInstance = null;
 
@@ -33,12 +35,26 @@ export class GameState {
     this.festivalContainer = constitute(Festivals);
   }
 
-  cancelFestival(festivalId) {
+  cancelFestivalData(festivalId) {
     this.festivalContainer.removeFestivalById(festivalId);
   }
 
+  cancelFestival(festivalId) {
+    this.cancelFestivalData(festivalId);
+    CancelFestivalRedis(festivalId);
+  }
+
+  addFestivalData(festival, insertIntoDb = true) {
+    this.festivalContainer.addFestival(festival, insertIntoDb);
+  }
+
   addFestival(festival) {
-    this.festivalContainer.addFestival(festival);
+    this.addFestivalData(festival);
+    AddFestivalRedis(festival);
+  }
+
+  hasFestival(playerName) {
+    return this.festivalContainer.hasFestival(playerName);
   }
 
   get festivals() {

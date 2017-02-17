@@ -3,22 +3,30 @@
 
 ## Table of Contents
 
-1. Archer
-2. Barbarian
-3. Bard
-4. Bitomancer
-5. Cleric
-6. Fighter
-7. Generalist
-8. Jester
-9. Mage
-10. MagicalMonster
-11. Monster
-12. Necromancer
-13. Pirate
-14. Rogue
-15. SandwichArtist
+1. [Archer](#archer)
+2. [Barbarian](#barbarian)
+3. [Bard](#bard)
+4. [Beatomancer](#beatomancer)
+5. [Bitomancer](#bitomancer)
+6. [Cleric](#cleric)
+7. [Clockborg](#clockborg)
+8. [Druid](#druid)
+9. [Fencer](#fencer)
+10. [Fighter](#fighter)
+11. [Generalist](#generalist)
+12. [Jester](#jester)
+13. [Mage](#mage)
+14. [MagicalMonster](#magicalmonster)
+15. [Monster](#monster)
+16. [Necromancer](#necromancer)
+17. [Pirate](#pirate)
+18. [Rogue](#rogue)
+19. [SandwichArtist](#sandwichartist)
+20. [Trickster](#trickster)
 
+
+
+---
 
 ## Archer
 
@@ -45,6 +53,10 @@ STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 0 | 18 | 0 | 0 | 0 | 0
 
+
+######[\[top\]](#idlelands-classes)
+---
+
 ## Barbarian
 
 ### Stats Per Level
@@ -69,6 +81,10 @@ You get X MP for every point in a particular stat.
 STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 0 | 0 | 0 | 0 | 0 | 0
+
+
+######[\[top\]](#idlelands-classes)
+---
 
 ## Bard
 
@@ -95,6 +111,39 @@ STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 0 | 0 | 0 | 0 | 30 | 0
 
+
+######[\[top\]](#idlelands-classes)
+---
+
+## Beatomancer
+
+### Stats Per Level
+
+These are the stat gains per level.
+
+HP | MP | STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | --- | --- | ---
+270 | 0 | 1 | 4 | 1 | 4 | 1 | 2
+
+
+### HP Modifiers
+You get X HP for every point in a particular stat.
+
+STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | ---
+0 | 0 | 30 | 0 | 0 | 0
+
+### MP Modifiers
+You get X MP for every point in a particular stat.
+
+STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | ---
+0 | 0 | 0 | 0 | 0 | 0
+
+
+######[\[top\]](#idlelands-classes)
+---
+
 ## Bitomancer
 
 ### Stats Per Level
@@ -119,6 +168,10 @@ You get X MP for every point in a particular stat.
 STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 0 | 0 | 0 | 0 | 0 | 0
+
+
+######[\[top\]](#idlelands-classes)
+---
 
 ## Cleric
 
@@ -145,6 +198,97 @@ STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 0 | 0 | 0 | 0 | 30 | 0
 
+
+######[\[top\]](#idlelands-classes)
+---
+
+## Clockborg
+
+### Stats Per Level
+
+These are the stat gains per level.
+
+HP | MP | STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | --- | --- | ---
+670 | 10 | 6 | 1 | 1 | 1 | 6 | 0
+
+
+### HP Modifiers
+You get X HP for every point in a particular stat.
+
+STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | ---
+0 | 0 | 27 | 0 | 0 | 0
+
+### MP Modifiers
+You get X MP for every point in a particular stat.
+
+STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | ---
+0 | 0 | 0 | 0 | 27 | 0
+
+
+######[\[top\]](#idlelands-classes)
+---
+
+## Druid
+
+### Stats Per Level
+
+These are the stat gains per level.
+
+HP | MP | STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | --- | --- | ---
+220 | 50 | 2 | 2 | 8 | 2 | 4 | 0
+
+
+### HP Modifiers
+You get X HP for every point in a particular stat.
+
+STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | ---
+0 | 0 | 30 | 0 | 0 | 0
+
+### MP Modifiers
+You get X MP for every point in a particular stat.
+
+STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | ---
+0 | 0 | 0 | 0 | 26 | 0
+
+
+######[\[top\]](#idlelands-classes)
+---
+
+## Fencer
+
+### Stats Per Level
+
+These are the stat gains per level.
+
+HP | MP | STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | --- | --- | ---
+270 | 0 | 1 | 7 | 1 | 1 | 1 | 1
+
+
+### HP Modifiers
+You get X HP for every point in a particular stat.
+
+STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | ---
+0 | 10 | 1 | 0 | 0 | 0
+
+### MP Modifiers
+You get X MP for every point in a particular stat.
+
+STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | ---
+0 | 0 | 0 | 0 | 0 | 0
+
+
+######[\[top\]](#idlelands-classes)
+---
+
 ## Fighter
 
 ### Stats Per Level
@@ -169,6 +313,10 @@ You get X MP for every point in a particular stat.
 STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 6 | 0 | 0 | 0 | 6 | 0
+
+
+######[\[top\]](#idlelands-classes)
+---
 
 ## Generalist
 
@@ -195,6 +343,10 @@ STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 0 | 0 | 0 | 0 | 18 | 0
 
+
+######[\[top\]](#idlelands-classes)
+---
+
 ## Jester
 
 ### Stats Per Level
@@ -219,6 +371,10 @@ You get X MP for every point in a particular stat.
 STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 0 | 0 | 0 | 0 | 0 | 30
+
+
+######[\[top\]](#idlelands-classes)
+---
 
 ## Mage
 
@@ -245,6 +401,10 @@ STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 0 | 0 | 0 | 0 | 42 | 0
 
+
+######[\[top\]](#idlelands-classes)
+---
+
 ## MagicalMonster
 
 ### Stats Per Level
@@ -269,6 +429,10 @@ You get X MP for every point in a particular stat.
 STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 0 | 0 | 0 | 0 | 120 | 0
+
+
+######[\[top\]](#idlelands-classes)
+---
 
 ## Monster
 
@@ -295,6 +459,10 @@ STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 0 | 0 | 0 | 0 | 0 | 0
 
+
+######[\[top\]](#idlelands-classes)
+---
+
 ## Necromancer
 
 ### Stats Per Level
@@ -319,6 +487,10 @@ You get X MP for every point in a particular stat.
 STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 0 | 0 | 0 | 0 | 72 | 0
+
+
+######[\[top\]](#idlelands-classes)
+---
 
 ## Pirate
 
@@ -345,6 +517,10 @@ STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 0 | 0 | 0 | 0 | 30 | 0
 
+
+######[\[top\]](#idlelands-classes)
+---
+
 ## Rogue
 
 ### Stats Per Level
@@ -370,6 +546,10 @@ STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 0 | 6 | 0 | 0 | 0 | 0
 
+
+######[\[top\]](#idlelands-classes)
+---
+
 ## SandwichArtist
 
 ### Stats Per Level
@@ -394,4 +574,33 @@ You get X MP for every point in a particular stat.
 STR | DEX | CON | AGI | INT | LUK
 --- | --- | --- | --- | --- | ---
 0 | 0 | 0 | 0 | 12 | 0
+
+
+######[\[top\]](#idlelands-classes)
+---
+
+## Trickster
+
+### Stats Per Level
+
+These are the stat gains per level.
+
+HP | MP | STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | --- | --- | ---
+270 | 0 | 1 | 1 | 1 | 1 | 1 | 5
+
+
+### HP Modifiers
+You get X HP for every point in a particular stat.
+
+STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | ---
+0 | 0 | 5 | 0 | 0 | 10
+
+### MP Modifiers
+You get X MP for every point in a particular stat.
+
+STR | DEX | CON | AGI | INT | LUK
+--- | --- | --- | --- | --- | ---
+0 | 0 | 0 | 0 | 0 | 10
 

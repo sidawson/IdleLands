@@ -22,6 +22,7 @@ PlayerEmitter.on('player:login', async ({ playerName, fromIp }) => {
   if(!player) return;
   migrate(player);
   handleIp(player, fromIp);
+  player.$shard = process.env.INSTANCE_NUMBER;
   player.update();
   player.$statistics.incrementStat('Game.Logins');
   AllPlayers(playerName);
@@ -64,6 +65,11 @@ PlayerEmitter.on('player:levelup', ({ player }) => {
     targets: [player.name],
     targetsDisplay: [player.fullname]
   });
+});
+
+PlayerEmitter.on('player:changelevel', ({ player }) => {
+  PlayerUpdateAll(player.name, ['level']);
+  player.update();
 });
 
 PlayerEmitter.on('player:changegender', ({ player }) => {

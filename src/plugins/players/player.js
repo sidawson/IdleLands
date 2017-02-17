@@ -50,6 +50,8 @@ export class Player extends Character {
 
     this.$updateAchievements = true;
     this.$updateCollectibles = true;
+    this.$updateGenders = true;
+    this.$updatePremium = true;
 
     this.$partyName = null;
 
@@ -63,7 +65,8 @@ export class Player extends Character {
   quickLogin() {
     this.$updateAchievements = true;
     this.$updateCollectibles = true;
-    this._updateParty();
+    this.$updateGenders = true;
+    this.$updatePremium = true;
 
     if(this.isMod) {
       this.emitGMData();
@@ -242,12 +245,20 @@ export class Player extends Character {
     this.update();
   }
 
+  emitLevelChange() {
+    emitter.emit('player:changelevel', { player: this });
+  }
+
   removeChoice(id) {
     this.choices = _.reject(this.choices, { id });
   }
 
+  get validGenders() {
+    return SETTINGS.validGenders.concat(this.$premium.genders);
+  }
+
   changeGender(newGender) {
-    if(!_.includes(SETTINGS.validGenders, newGender)) return;
+    if(!_.includes(this.validGenders, newGender)) return;
     this.gender = newGender;
     emitter.emit('player:changegender', { player: this });
   }
@@ -444,6 +455,10 @@ export class Player extends Character {
     this.$dataUpdater(this.name, 'personalities', { earned: this.$personalities.earnedPersonalities, active: this.$personalities.activePersonalities });
   }
 
+  _updateGenders() {
+    this.$dataUpdater(this.name, 'genders', this.validGenders);
+  }
+
   _updatePet() {
     this.__updatePetBuyData();
     this.__updatePetBasic();
@@ -471,6 +486,10 @@ export class Player extends Character {
     this.__updateFestivals();
   }
 
+  _updatePremium() {
+    this.$dataUpdater(this.name, 'premium', { buyable: this.$premium.buyable, ilp: this.$premium.ilp, bought: this.$premium.oneTimeItemsPurchased });
+  }
+
   update() {
     this._updatePlayer();
     this._updateParty();
@@ -478,6 +497,16 @@ export class Player extends Character {
 
     if(this.$updateEquipment) {
       this._updateEquipment();
+    }
+
+    if(this.$updateGenders) {
+      this.$updateGenders = false;
+      this._updateGenders();
+    }
+
+    if(this.$updatePremium) {
+      this.$updatePremium = false;
+      this._updatePremium();
     }
   }
 
@@ -507,8 +536,9 @@ export class Player extends Character {
     });
 
     this.$statistics.incrementStat('Character.Ascension.Levels', this.level);
-    this._level.maximum += 50;
+    this._level.maximum += SETTINGS.ascensionLevelBoost;
     this._level.set(1);
+    this._xp.set(0);
 
     this.resetMaxXp();
 
@@ -527,14 +557,18 @@ export class Player extends Character {
     this.save();
 
     this.$pets.save();
+    this.$statistics.save();
+
+    const ascBonus = 0.25 + (0.05 * currentAscensionLevel);
 
     GameState.getInstance().addFestival({
       name: `${this.name}'s Ascension`,
-      message: `${this.name} has ascended! +20% XP for everyone for 24 hours!`,
+      message: `${this.name} has ascended! +${ascBonus*100}% XP/Gold for everyone for 24 hours!`,
+      startedBy: this.name,
       hourDuration: 24,
       bonuses: {
-        xp: 0.2 + (0.15 * currentAscensionLevel),
-        gold: 0.2 + (0.15 * currentAscensionLevel)
+        xp: ascBonus,
+        gold: ascBonus
       }
     });
   }

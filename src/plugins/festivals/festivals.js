@@ -30,17 +30,27 @@ export class Festivals {
       });
   }
 
-  addFestival(festival) {
+  hasFestival(playerName) {
+    return _.find(this.festivals, { startedBy: playerName });
+  }
+
+  addFestival(festival, insertIntoDb) {
+    if(_.find(this.festivals, { name: festival.name })) return;
+
     if(festival.message) {
       sendSystemMessage(festival.message);
     }
+
     festival = new Festival(festival);
-    this.festivalsDb.saveFestival(festival);
+    if(insertIntoDb) {
+      this.festivalsDb.saveFestival(festival);
+    }
     this.festivals.push(festival);
   }
 
   removeFestivalById(festivalId) {
     const festival = _.find(this.festivals, { _id: ObjectId(festivalId) });
+    if(!festival) return;
     this._removeFestival(festival);
   }
 

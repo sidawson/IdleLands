@@ -3,16 +3,14 @@ import _ from 'lodash';
 
 import { Achievement, AchievementTypes } from '../achievement';
 
-import * as Professions from '../../../core/professions/_all';
-
 export class Classfluid extends Achievement {
   static achievementData(player) {
 
     const allProfessionsBeen = player.$statistics.getStat('Character.Professions');
-    const allProfessionBeenCount = _.keys(allProfessionsBeen);
-    const allProfessions = _.keys(Professions);
-
-    if(allProfessions.length !== allProfessionBeenCount.length) return [];
+    const allProfessions = [
+      'Archer', 'Barbarian', 'Bard', 'Bitomancer', 'Cleric', 'Fighter', 'Generalist', 'Jester',
+      'Mage', 'MagicalMonster', 'Monster', 'Necromancer', 'Pirate', 'Rogue', 'SandwichArtist'
+    ];
 
     let tier = 0;
     while(++tier) {
@@ -21,10 +19,12 @@ export class Classfluid extends Achievement {
 
     tier--;
 
+    if(tier === 0) return [];
+
     return [{
       tier,
       name: 'Classfluid',
-      desc: `+${3*tier}% STR/CON/DEX/INT/AGI/LUK and +${tier*100} max item score for being each profession ${tier} times.`,
+      desc: `+${3*tier}% STR/CON/DEX/INT/AGI/LUK and +${tier*100} max item score for being each basic profession ${tier} times.`,
       type: AchievementTypes.PROGRESS,
       rewards: [{
         type: 'title',
